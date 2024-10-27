@@ -1,5 +1,5 @@
 package agh.ics.oop.model;
-
+//lab2
 public enum MapDirection {
     NORTH,
     SOUTH,

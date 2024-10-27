@@ -1,5 +1,5 @@
 package agh.ics.oop;
-
+//lab2
 import agh.ics.oop.model.MoveDirection;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;

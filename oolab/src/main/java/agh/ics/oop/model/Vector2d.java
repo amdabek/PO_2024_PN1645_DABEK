@@ -1,5 +1,5 @@
 package agh.ics.oop.model;
-
+//lab2
 public class Vector2d {
     public final int x, y;
 

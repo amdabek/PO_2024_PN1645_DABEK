@@ -1,5 +1,5 @@
 package agh.ics.oop;
-
+//lab2
 import agh.ics.oop.model.MoveDirection;
 
 public class OptionsParser {
