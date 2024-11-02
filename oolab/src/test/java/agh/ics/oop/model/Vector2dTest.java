@@ -51,6 +51,12 @@ public class Vector2dTest {
     void testEquals() {
         assertTrue(v.equals(new Vector2d(2, 3)));
         assertFalse(v.equals(w));
+        assertTrue(v.equals(v));
+        assertFalse(v.equals(null));
+        assertFalse(v.equals("2, 3"));
+        assertFalse(v.equals(new Vector2d(-2, -3)));
+        assertFalse(v.equals(new Vector2d(0, 0)));
+
     }
 
     @Test
