@@ -3,42 +3,34 @@ package agh.ics.oop;
 import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.Vector2d;
 import agh.ics.oop.model.MapDirection;
+import agh.ics.oop.model.Animal;
+
+/*
+Skorzystałam z ArrayList  do implementacji listy ze względu na możliwość dynamicznego zmieniania rozmiaru, szybki, stały czas dostępu do indeksowanych danych.
+Wszystkie te cechy ułatwiły wykonanie zadań, wpłynęły pozytywnie na wydajność oraz czytelność kodu.
+ */
+
+import java.util.List;
 
 public class World {
     public static void main(String[] args) {
-        //lab1
-        /*System.out.println("Start");
 
-        MoveDirection[] directions = OptionsParser.parse(args);
-        run(directions);
+        List<MoveDirection> directions = OptionsParser.parse(args);
+        List<Vector2d> positions = List.of(
+                new Vector2d(2, 2),
+                new Vector2d(3, 4)
+        );
+        Simulation simulation = new Simulation(positions, directions);
+        simulation.run();
 
-        System.out.println("Stop");*/
-        Vector2d startPoint = new Vector2d(3, 4);
-        System.out.println("Start Point: " + startPoint);
 
-        Vector2d endPoint = new Vector2d(-1, 3);
-        System.out.println("End Point: " + endPoint);
 
-        Vector2d resultVector = startPoint.add(endPoint);
-        System.out.println("Result of addition: " + resultVector);
+        }
 
-        MapDirection currentDirection = MapDirection.WEST;
-        System.out.println("Current Direction: " + currentDirection);
-
-        MapDirection nextDirection = currentDirection.next();
-        System.out.println("Next Direction: " + nextDirection);
-
-        MapDirection previousDirection = currentDirection.previous();
-        System.out.println("Previous Direction: " + previousDirection);
-
-        Vector2d unitVector = currentDirection.toUnitVector();
-        System.out.println("Unit Vector of Current Direction: " + unitVector);
-
-    }
 
     public static void run(MoveDirection[] directions) {
         for (MoveDirection direction : directions) {
-            if (direction != null) {
+
             switch (direction) {
 
                 case FORWARD -> System.out.println("Zwierzak idzie do przodu");
@@ -47,7 +39,7 @@ public class World {
                 case LEFT -> System.out.println("Zwierzak skręca w lewo");
             }
 
-            }
+
         }
     }
 }
