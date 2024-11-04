@@ -67,6 +67,25 @@ public class SimulationTest {
     }
 
     @Test
+    public void testSimulationWithStringInput() {
+        String[] input = {"f", "f", "r", "b"};
+        List<Vector2d> positions = new ArrayList<>();
+        positions.add(new Vector2d(2, 2));
+
+        List<MoveDirection> directions = OptionsParser.parse(input);
+        Simulation simulation = new Simulation(positions, directions);
+        simulation.run();
+        List<Animal> animals = simulation.getAnimals();
+        assertEquals(1, animals.size());
+        Animal animal = animals.get(0);
+
+        assertEquals(new Vector2d(1, 4), animal.getCoordinates());
+        assertEquals(MapDirection.EAST, animal.getDirection());
+    }
+
+
+
+    @Test
     public void testAnimalMovement() {
         Animal animal = new Animal(new Vector2d(2, 2));
 
