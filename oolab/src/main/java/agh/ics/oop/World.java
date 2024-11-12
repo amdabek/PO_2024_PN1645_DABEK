@@ -2,30 +2,35 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.MoveDirection;
 import agh.ics.oop.model.Vector2d;
-import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.Animal;
-
-/*
-Skorzystałam z ArrayList  do implementacji listy ze względu na możliwość dynamicznego zmieniania rozmiaru, szybki, stały czas dostępu do indeksowanych danych.
-Wszystkie te cechy ułatwiły wykonanie zadań, wpłynęły pozytywnie na wydajność oraz czytelność kodu.
- */
+import agh.ics.oop.model.WorldMap;
+import agh.ics.oop.model.RectangularMap;
 
 import java.util.List;
 
 public class World {
     public static void main(String[] args) {
-
         List<MoveDirection> directions = OptionsParser.parse(args);
         List<Vector2d> positions = List.of(
                 new Vector2d(2, 2),
-                new Vector2d(3, 4)
+                new Vector2d(3, 4),
+                new Vector2d(0,0)
         );
-        Simulation simulation = new Simulation(positions, directions);
+
+        WorldMap map = new RectangularMap(10, 10);
+        Simulation simulation = new Simulation(map, positions, directions);
         simulation.run();
 
 
+    }
+}
 
-        }
+
+/*
+/*
+Skorzystałam z ArrayList  do implementacji listy ze względu na możliwość dynamicznego zmieniania rozmiaru, szybki, stały czas dostępu do indeksowanych danych.
+Wszystkie te cechy ułatwiły wykonanie zadań, wpłynęły pozytywnie na wydajność oraz czytelność kodu.
+ *//*
+
 
 
     public static void run(MoveDirection[] directions) {
@@ -44,3 +49,4 @@ public class World {
     }
 }
 
+*/

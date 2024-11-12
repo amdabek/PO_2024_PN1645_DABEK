@@ -1,11 +1,6 @@
 package agh.ics.oop;
 
-import agh.ics.oop.Simulation;
-
-import agh.ics.oop.model.Animal;
-import agh.ics.oop.model.MapDirection;
-import agh.ics.oop.model.MoveDirection;
-import agh.ics.oop.model.Vector2d;
+import agh.ics.oop.model.*;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -14,160 +9,75 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SimulationTest {
-
     @Test
-    public void testSimulationRun() {
-        List<MoveDirection> directions = new ArrayList<>();
-        directions.add(MoveDirection.FORWARD);
-        directions.add(MoveDirection.FORWARD);
-        directions.add(MoveDirection.RIGHT);
-        directions.add(MoveDirection.RIGHT);
-        directions.add(MoveDirection.FORWARD);
-        directions.add(MoveDirection.FORWARD);
-
+    public void simulationOfMultipleAnimals() {
+        List<MoveDirection> directions = OptionsParser.parse("r l f f 5 g s f f b r b r".split(" "));
         List<Vector2d> positions = new ArrayList<>();
+        RectangularMap map = new RectangularMap(8,8);
         positions.add(new Vector2d(2, 2));
-        positions.add(new Vector2d(2, 2));
+        positions.add(new Vector2d(3, 3));
 
-        Simulation simulation = new Simulation(positions, directions);
+        Simulation simulation = new Simulation(map, positions, directions);
         simulation.run();
 
         List<Animal> animals = simulation.getAnimals();
 
         assertEquals(2, animals.size());
+        assertTrue(animals.get(0).isAt(new Vector2d(2, 2)));
+        assertTrue(animals.get(1).isAt(new Vector2d(1, 3)));
+
+        for(Animal animal : animals) {
+            assertEquals(MapDirection.EAST, animal.getDirection());
+            assertTrue(animal.getCoordinates().precedes(new Vector2d(4, 4)));
+            assertTrue(animal.getCoordinates().follows(new Vector2d(0,0)));
+        }
+    }
+
+    @Test
+    public void simulationOfSingleAnimal() {
+        List<MoveDirection> directions = OptionsParser.parse("f s f 5 l f".split(" "));
+        List<Vector2d> positions = List.of(new Vector2d(2, 2));
+        RectangularMap map = new RectangularMap(8,8);
+        Simulation simulation = new Simulation(map, positions, directions);
+        simulation.run();
+
+        List<Animal> animals = simulation.getAnimals();
+        assertEquals(1, animals.size());
+        assertTrue(animals.get(0).isAt(new Vector2d(1,4)));
+        assertEquals(MapDirection.WEST, animals.get(0).getDirection());
+        assertTrue(animals.get(0).getCoordinates().follows(new Vector2d(0,0)));
+        assertTrue(animals.get(0).getCoordinates().precedes(new Vector2d(4,4)));
+    }
+
+    @Test
+    public void animalDoesntGoOutOfBounds() {
+        List<MoveDirection> directions = OptionsParser.parse("b f".split(" "));
+        List<Vector2d> positions = List.of(new Vector2d(0, 0), new Vector2d(4, 4));
+        RectangularMap map = new RectangularMap(5,5);
+        Simulation simulation = new Simulation(map, positions, directions);
+        simulation.run();
+        List<Animal> animals = simulation.getAnimals();
 
         for (Animal animal : animals) {
-            assertEquals(MapDirection.EAST, animal.getDirection());
-            assertTrue(animal.getCoordinates().follows(new Vector2d(0, 0)));
-            assertTrue(animal.getCoordinates().precedes(new Vector2d(4, 4)));
+            assertTrue(animal.getCoordinates().follows(new Vector2d(0,0)));
+            assertTrue(animal.getCoordinates().precedes(new Vector2d(4,4)));
         }
     }
 
     @Test
-    public void testSimulationSingleAnimal() {
+    public void simulationWithEmptyInput() {
         List<MoveDirection> directions = new ArrayList<>();
-        directions.add(MoveDirection.FORWARD);
-        directions.add(MoveDirection.RIGHT);
-        directions.add(MoveDirection.BACKWARD);
-
         List<Vector2d> positions = new ArrayList<>();
-        positions.add(new Vector2d(0, 0));
+        RectangularMap map = new RectangularMap(5,5);
 
-        Simulation simulation = new Simulation(positions, directions);
+        Simulation simulation = new Simulation(map, positions, directions);
         simulation.run();
 
         List<Animal> animals = simulation.getAnimals();
 
-        assertEquals(1, animals.size());
-
-        Animal animal = animals.get(0);
-
-        assertEquals(MapDirection.EAST, animal.getDirection());
-        assertEquals(new Vector2d(0, 1), animal.getCoordinates());
+        assertTrue(animals.isEmpty());
     }
-
-    @Test
-    public void testSimulationWithStringInput() {
-        String[] input = {"f", "f", "r", "b"};
-        List<Vector2d> positions = new ArrayList<>();
-        positions.add(new Vector2d(2, 2));
-
-        List<MoveDirection> directions = OptionsParser.parse(input);
-        Simulation simulation = new Simulation(positions, directions);
-        simulation.run();
-        List<Animal> animals = simulation.getAnimals();
-        assertEquals(1, animals.size());
-        Animal animal = animals.get(0);
-
-        assertEquals(new Vector2d(1, 4), animal.getCoordinates());
-        assertEquals(MapDirection.EAST, animal.getDirection());
-    }
-
-
-
-    @Test
-    public void testAnimalMovement() {
-        Animal animal = new Animal(new Vector2d(2, 2));
-
-        animal.move(MoveDirection.FORWARD);
-        assertEquals(MapDirection.NORTH, animal.getDirection());
-        assertEquals(new Vector2d(2, 3), animal.getCoordinates());
-
-        animal.move(MoveDirection.RIGHT);
-        assertEquals(MapDirection.EAST, animal.getDirection());
-        assertEquals(new Vector2d(2, 3), animal.getCoordinates());
-
-        animal.move(MoveDirection.BACKWARD);
-        assertEquals(MapDirection.EAST, animal.getDirection());
-        assertEquals(new Vector2d(1, 3), animal.getCoordinates());
-    }
-
-    @Test
-    public void testAnimalEdgeCases() {
-        Animal animal = new Animal(new Vector2d(0, 0));
-
-        animal.move(MoveDirection.LEFT);
-        assertEquals(MapDirection.WEST, animal.getDirection());
-        assertEquals(new Vector2d(0, 0), animal.getCoordinates());
-
-        animal.move(MoveDirection.BACKWARD);
-        assertEquals(MapDirection.WEST, animal.getDirection());
-        assertEquals(new Vector2d(1, 0), animal.getCoordinates());
-
-        animal.move(MoveDirection.RIGHT);
-        assertEquals(MapDirection.NORTH, animal.getDirection());
-        assertEquals(new Vector2d(1, 0), animal.getCoordinates());
-
-        animal.move(MoveDirection.FORWARD);
-        assertEquals(MapDirection.NORTH, animal.getDirection());
-        assertEquals(new Vector2d(1, 1), animal.getCoordinates());
-    }
-
-    @Test
-    public void testAnimalBoundaries() {
-        Animal animal = new Animal(new Vector2d(0, 0));
-
-        animal.move(MoveDirection.LEFT);
-
-        animal.move(MoveDirection.FORWARD);
-        assertEquals(new Vector2d(0, 0), animal.getCoordinates());
-
-        animal.move(MoveDirection.LEFT);
-        animal.move(MoveDirection.FORWARD);
-        assertEquals(new Vector2d(0, 0), animal.getCoordinates());
-
-        animal.move(MoveDirection.LEFT);
-        for (int i = 0; i < 7; i++) {
-            animal.move(MoveDirection.FORWARD);
-        }
-        assertEquals(new Vector2d(4, 0), animal.getCoordinates());
-
-        animal.move(MoveDirection.LEFT);
-        for (int i = 0; i < 9; i++) {
-            animal.move(MoveDirection.FORWARD);
-        }
-        assertEquals(new Vector2d(4, 4), animal.getCoordinates());
-    }
-
-    @Test
-    public void testAnimalIsAt() {
-        Animal animal = new Animal(new Vector2d(2, 2));
-
-        assertTrue(animal.isAt(new Vector2d(2, 2)));
-
-        animal.move(MoveDirection.FORWARD);
-        assertFalse(animal.isAt(new Vector2d(2, 2)));
-        assertTrue(animal.isAt(new Vector2d(2, 3)));
-    }
-
-    @Test
-    public void testAnimalDefaultConstructor() {
-        Animal animal = new Animal();
-
-        assertEquals(new Vector2d(2, 2), animal.getCoordinates());
-        assertEquals(MapDirection.NORTH, animal.getDirection());
-
-        assertTrue(animal.isAt(new Vector2d(2, 2)));
-    }
-
 }
+
+
+
