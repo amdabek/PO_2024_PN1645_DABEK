@@ -1,24 +1,17 @@
 package agh.ics.oop.model;
 
 public class Animal {
-    private MapDirection orientation;
+    private MapDirection direction;
     private Vector2d position;
-    private static final Vector2d LOWER_LEFT = new Vector2d(0, 0);
-    private static final Vector2d UPPER_RIGHT = new Vector2d(4, 4);
 
     public Animal() {
-        this.position = new Vector2d(2, 2);
-        this.orientation = MapDirection.NORTH;
+        direction = MapDirection.NORTH;
+        position = new Vector2d(2, 2);
     }
 
-    public Animal(Vector2d initialPosition) {
-        this.position = initialPosition;
-        this.orientation = MapDirection.NORTH;
-    }
-
-    @Override
-    public String toString() {
-        return this.position + ", " + this.orientation;
+    public Animal(MapDirection direction, Vector2d position) {
+        this.direction = direction;
+        this.position = position;
     }
 
     public Vector2d getCoordinates() {
@@ -26,30 +19,44 @@ public class Animal {
     }
 
     public MapDirection getDirection() {
-        return this.orientation;
+        return this.direction;
+    }
+
+    public String toString() {
+        return switch (this.direction) {
+            case NORTH -> "N";
+            case EAST -> "E";
+            case SOUTH -> "S";
+            case WEST -> "W";
+        };
+    }
+
+    public String toString(int numberOfAnimal) {
+        return "Zwierze " + numberOfAnimal + " jest na pozycji: " + this.position.toString() + " i orientacji: " + this.direction.toString();
     }
 
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
 
-    public void move(MoveDirection direction) {
+    public void move(MoveDirection direction, MoveValidator validator) {
         switch (direction) {
-            case RIGHT -> this.orientation = this.orientation.next();
-            case LEFT -> this.orientation = this.orientation.previous();
-            case FORWARD, BACKWARD -> {
-                Vector2d moveVector = this.orientation.toUnitVector();
-                if (direction == MoveDirection.BACKWARD) {
-                    moveVector = moveVector.opposite();
-                }
-                Vector2d newPosition = this.position.add(moveVector);
-                if (newPosition.follows(LOWER_LEFT) && newPosition.precedes(UPPER_RIGHT)) {
-                    this.position = newPosition;
+            case RIGHT -> this.direction = this.direction.next();
+            case LEFT -> this.direction = this.direction.previous();
+            case FORWARD -> {
+                Vector2d newPositionForward = this.position.add(this.direction.toUnitVector());
+                if (validator.canMoveTo(newPositionForward)) {
+                    this.position = newPositionForward;
                 }
             }
-            default -> {
+            case BACKWARD -> {
+                Vector2d newPositionBackwards = this.position.subtract(this.direction.toUnitVector());
+                if (validator.canMoveTo(newPositionBackwards)) {
+                    this.position = newPositionBackwards;
+                }
+            }
+            default -> {}
 
-            }
         }
     }
 }
