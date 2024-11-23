@@ -1,5 +1,6 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.util.IncorrectPositionException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,32 +10,57 @@ class RectangularMapTest {
     public void placeAnimal() {
         RectangularMap map = new RectangularMap(4, 4);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
-        Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 4));
+        Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 4)); // Poza mapą
 
-        assertTrue(map.place(animal1));
-        assertFalse(map.place(animal2));
+        try {
+            map.place(animal1);
+        } catch (IncorrectPositionException e) {
+            fail("First animal should be placed successfully.");
+        }
+
+        assertThrows(IncorrectPositionException.class, () -> map.place(animal2));
     }
 
     @Test
     public void canMoveToTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
-        map.place(animal1);
 
+        try {
+            map.place(animal1);
+        } catch (IncorrectPositionException e) {
+            fail("Animal should be placed successfully at (2,3).");
+        }
+
+        assertFalse(map.canMoveTo(new Vector2d(2, 3)));
         assertTrue(map.canMoveTo(new Vector2d(2, 4)));
         assertTrue(map.canMoveTo(new Vector2d(1, 3)));
 
         Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 4));
-        map.place(animal2);
+
+        try {
+            map.place(animal2);
+        } catch (IncorrectPositionException e) {
+            fail("Animal should be placed successfully at (3,4).");
+        }
 
         assertFalse(map.canMoveTo(new Vector2d(3, 4)));
+
+        assertFalse(map.canMoveTo(new Vector2d(-1, 0))); // Poza mapą
+        assertFalse(map.canMoveTo(new Vector2d(0, -1))); // Poza mapą
+        assertFalse(map.canMoveTo(new Vector2d(5, 0)));  // Poza mapą
+        assertFalse(map.canMoveTo(new Vector2d(0, 5)));  // Poza mapą
     }
 
     @Test
     public void isOccupiedTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
-        map.place(animal);
+        try {
+            map.place(animal);
+        } catch (IncorrectPositionException e) {
+            fail("Animal should be placed successfully.");
+        }
 
         assertTrue(map.isOccupied(new Vector2d(2, 3)));
         assertFalse(map.isOccupied(new Vector2d(0, 4)));
@@ -45,8 +71,12 @@ class RectangularMapTest {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
         Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 4));
-        map.place(animal1);
-        map.place(animal2);
+        try {
+            map.place(animal1);
+            map.place(animal2);
+        } catch (IncorrectPositionException e) {
+            fail("Animals should be placed successfully.");
+        }
 
         assertEquals(animal1, map.objectAt(new Vector2d(2, 3)));
         assertEquals(animal2, map.objectAt(new Vector2d(3, 4)));
@@ -57,8 +87,12 @@ class RectangularMapTest {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
         Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 3));
-        map.place(animal1);
-        map.place(animal2);
+        try {
+            map.place(animal1);
+            map.place(animal2);
+        } catch (IncorrectPositionException e) {
+            fail("Animals should be placed successfully.");
+        }
 
         map.move(animal1, MoveDirection.FORWARD);
         map.move(animal2, MoveDirection.FORWARD);
@@ -71,7 +105,11 @@ class RectangularMapTest {
     public void mapBoundariesTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(2, 4));
-        map.place(animal);
+        try {
+            map.place(animal);
+        } catch (IncorrectPositionException e) {
+            fail("Animal should be placed successfully.");
+        }
 
         map.move(animal, MoveDirection.FORWARD);
 
@@ -93,10 +131,15 @@ class RectangularMapTest {
                         " -1: -----------" + ls;
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
-        map.place(animal);
+        try {
+            map.place(animal);
+        } catch (IncorrectPositionException e) {
+            fail("Animal should be placed successfully.");
+        }
 
         assertEquals(expectedMap, map.toString());
     }
+
 
     @Test
     public void emptyMapTest() {
@@ -117,6 +160,3 @@ class RectangularMapTest {
         assertFalse(map.canMoveTo(new Vector2d(0, 5)));
     }
 }
-
-
-

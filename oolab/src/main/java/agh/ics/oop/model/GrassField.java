@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.util.Boundary;
+
 import java.util.*;
 
 public class GrassField extends AbstractWorldMap {
@@ -49,6 +51,20 @@ public class GrassField extends AbstractWorldMap {
         }
         return visualizer.draw(bottom, top);
     }
+    @Override
+    public Boundary getCurrentBounds() {
+        Vector2d min = new Vector2d(upperRight.x, upperRight.y);
+        Vector2d max = new Vector2d(lowerLeft.x, lowerLeft.y);
+
+        for (WorldElement element : getElements()) {
+            Vector2d pos = element.getPosition();
+            min = min.lowerLeft(pos);
+            max = max.upperRight(pos);
+        }
+
+        return new Boundary(min, max);
+    }
+
     public Collection<Grass> getGrasses() {
         return grasses.values();
     }

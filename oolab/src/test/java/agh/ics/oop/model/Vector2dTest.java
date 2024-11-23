@@ -56,11 +56,17 @@ public class Vector2dTest {
         assertFalse(v.equals("2, 3"));
         assertFalse(v.equals(new Vector2d(-2, -3)));
         assertFalse(v.equals(new Vector2d(0, 0)));
-
     }
 
     @Test
     void opposite() {
         assertEquals(new Vector2d(-2, -3), v.opposite());
+    }
+
+    @Test
+    void getXandGetY() {
+        Vector2d vector = new Vector2d(5, 10);
+        assertEquals(5, vector.getX());
+        assertEquals(10, vector.getY());
     }
 }

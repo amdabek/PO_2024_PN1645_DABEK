@@ -38,8 +38,7 @@ public class OptionsParserTest {
     @Test
     void parseUnknown() {
         String[] args = {"x"};
-        List<MoveDirection> expected = List.of();
-        assertEquals(expected, OptionsParser.parse(args));
+        assertThrows(IllegalArgumentException.class, () -> OptionsParser.parse(args));
     }
 
     @Test
