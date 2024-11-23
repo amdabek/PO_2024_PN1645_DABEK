@@ -1,13 +1,12 @@
 package agh.ics.oop.model;
 
 import org.junit.jupiter.api.Test;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class RectangularMapTest {
 
     @Test
-    public void testPlaceAnimal() {
+    public void placeAnimal() {
         RectangularMap map = new RectangularMap(4, 4);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
         Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 4));
@@ -17,7 +16,7 @@ class RectangularMapTest {
     }
 
     @Test
-    public void testCanMoveTo() {
+    public void canMoveToTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
         map.place(animal1);
@@ -32,7 +31,7 @@ class RectangularMapTest {
     }
 
     @Test
-    public void testIsOccupied() {
+    public void isOccupiedTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
         map.place(animal);
@@ -42,7 +41,7 @@ class RectangularMapTest {
     }
 
     @Test
-    public void testObjectAt() {
+    public void objectAtTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
         Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 4));
@@ -54,43 +53,44 @@ class RectangularMapTest {
     }
 
     @Test
-    public void testMoveAnimal() {
+    public void moveAnimalTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal1 = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
-        Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 4));
+        Animal animal2 = new Animal(MapDirection.EAST, new Vector2d(3, 3));
         map.place(animal1);
         map.place(animal2);
 
         map.move(animal1, MoveDirection.FORWARD);
         map.move(animal2, MoveDirection.FORWARD);
 
-        assertEquals(new Vector2d(2, 4), animal1.getCoordinates());
-        assertEquals(new Vector2d(4, 4), animal2.getCoordinates());
+        assertEquals(new Vector2d(2, 4), animal1.getPosition());
+        assertEquals(new Vector2d(4, 3), animal2.getPosition());
     }
 
     @Test
-    public void testMapBoundaries() {
+    public void mapBoundariesTest() {
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(2, 4));
         map.place(animal);
 
         map.move(animal, MoveDirection.FORWARD);
 
-        assertEquals(new Vector2d(2, 4), animal.getCoordinates());
+        assertEquals(new Vector2d(2, 4), animal.getPosition());
         assertTrue(map.isOccupied(new Vector2d(2, 4)));
     }
 
     @Test
-    public void testToString() {
+    public void toStringTest() {
+        String ls = System.lineSeparator();
         String expectedMap =
-                " y\\x  0 1 2 3 4\r\n" +
-                        "  5: -----------\r\n" +
-                        "  4: | | | | | |\r\n" +
-                        "  3: | | |N| | |\r\n" +
-                        "  2: | | | | | |\r\n" +
-                        "  1: | | | | | |\r\n" +
-                        "  0: | | | | | |\r\n" +
-                        " -1: -----------\r\n";
+                " y\\x  0 1 2 3 4" + ls +
+                        "  5: -----------" + ls +
+                        "  4: | | | | | |" + ls +
+                        "  3: | | |N| | |" + ls +
+                        "  2: | | | | | |" + ls +
+                        "  1: | | | | | |" + ls +
+                        "  0: | | | | | |" + ls +
+                        " -1: -----------" + ls;
         RectangularMap map = new RectangularMap(5, 5);
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(2, 3));
         map.place(animal);
@@ -99,23 +99,24 @@ class RectangularMapTest {
     }
 
     @Test
-    public void testEmptyMap() {
+    public void emptyMapTest() {
         RectangularMap map = new RectangularMap(5, 5);
-
 
         for (int x = 0; x < 5; x++) {
             for (int y = 0; y < 5; y++) {
                 Vector2d position = new Vector2d(x, y);
-                assertFalse(map.isOccupied(position), "Pozycja " + position + " nie powinna być zajęta");
-                assertNull(map.objectAt(position), "Na pozycji " + position + " nie powinno być obiektu");
+                assertFalse(map.isOccupied(position));
+                assertNull(map.objectAt(position));
             }
         }
-        
-        assertTrue(map.canMoveTo(new Vector2d(2, 2)), "Powinno być możliwe poruszenie się na pozycję (2,2)");
-        assertFalse(map.canMoveTo(new Vector2d(-1, 0)), "Nie powinno być możliwe poruszenie się na pozycję (-1,0)");
-        assertFalse(map.canMoveTo(new Vector2d(0, -1)), "Nie powinno być możliwe poruszenie się na pozycję (0,-1)");
-        assertFalse(map.canMoveTo(new Vector2d(5, 0)), "Nie powinno być możliwe poruszenie się na pozycję (5,0)");
-        assertFalse(map.canMoveTo(new Vector2d(0, 5)), "Nie powinno być możliwe poruszenie się na pozycję (0,5)");
-    }
 
+        assertTrue(map.canMoveTo(new Vector2d(2, 2)));
+        assertFalse(map.canMoveTo(new Vector2d(-1, 0)));
+        assertFalse(map.canMoveTo(new Vector2d(0, -1)));
+        assertFalse(map.canMoveTo(new Vector2d(5, 0)));
+        assertFalse(map.canMoveTo(new Vector2d(0, 5)));
+    }
 }
+
+
+

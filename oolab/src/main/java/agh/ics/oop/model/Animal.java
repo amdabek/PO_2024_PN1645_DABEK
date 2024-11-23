@@ -1,12 +1,12 @@
 package agh.ics.oop.model;
 
-public class Animal {
+public class Animal implements WorldElement {
     private MapDirection direction;
     private Vector2d position;
 
     public Animal() {
-        direction = MapDirection.NORTH;
-        position = new Vector2d(2, 2);
+        this.direction = MapDirection.NORTH;
+        this.position = new Vector2d(2, 2);
     }
 
     public Animal(MapDirection direction, Vector2d position) {
@@ -14,7 +14,8 @@ public class Animal {
         this.position = position;
     }
 
-    public Vector2d getCoordinates() {
+    @Override
+    public Vector2d getPosition() {
         return this.position;
     }
 
@@ -22,6 +23,7 @@ public class Animal {
         return this.direction;
     }
 
+    @Override
     public String toString() {
         return switch (this.direction) {
             case NORTH -> "N";
@@ -31,32 +33,27 @@ public class Animal {
         };
     }
 
-    public String toString(int numberOfAnimal) {
-        return "Zwierze " + numberOfAnimal + " jest na pozycji: " + this.position.toString() + " i orientacji: " + this.direction.toString();
-    }
-
     public boolean isAt(Vector2d position) {
         return this.position.equals(position);
     }
 
-    public void move(MoveDirection direction, MoveValidator validator) {
+    public void move(MoveDirection direction, WorldMap map) {
         switch (direction) {
             case RIGHT -> this.direction = this.direction.next();
             case LEFT -> this.direction = this.direction.previous();
             case FORWARD -> {
-                Vector2d newPositionForward = this.position.add(this.direction.toUnitVector());
-                if (validator.canMoveTo(newPositionForward)) {
-                    this.position = newPositionForward;
+                Vector2d newPosition = this.position.add(this.direction.toUnitVector());
+                if (map.canMoveTo(newPosition)) {
+                    this.position = newPosition;
                 }
             }
             case BACKWARD -> {
-                Vector2d newPositionBackwards = this.position.subtract(this.direction.toUnitVector());
-                if (validator.canMoveTo(newPositionBackwards)) {
-                    this.position = newPositionBackwards;
+                Vector2d newPosition = this.position.subtract(this.direction.toUnitVector());
+                if (map.canMoveTo(newPosition)) {
+                    this.position = newPosition;
                 }
             }
             default -> {}
-
         }
     }
 }

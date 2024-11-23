@@ -2,9 +2,8 @@ package agh.ics.oop;
 
 import agh.ics.oop.model.MoveDirection;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.util.List;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class OptionsParserTest {
 
@@ -39,7 +38,7 @@ public class OptionsParserTest {
     @Test
     void parseUnknown() {
         String[] args = {"x"};
-        List<MoveDirection> expected = List.of(); // Niepoprawne opcje są ignorowane
+        List<MoveDirection> expected = List.of();
         assertEquals(expected, OptionsParser.parse(args));
     }
 
@@ -62,3 +61,5 @@ public class OptionsParserTest {
         assertEquals(expected, OptionsParser.parse(args));
     }
 }
+
+
