@@ -1,5 +1,7 @@
 package agh.ics.oop.model;
 
+import agh.ics.oop.model.util.Boundary;
+import agh.ics.oop.model.util.IncorrectPositionException;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
@@ -13,47 +15,7 @@ public class AnimalTest {
         }
 
         @Override
-        public boolean place(Animal animal) {
-            return true;
-        }
-
-        @Override
-        public void move(Animal animal, MoveDirection direction) {
-        }
-
-        @Override
-        public boolean isOccupied(Vector2d position) {
-            return false;
-        }
-
-        @Override
-        public WorldElement objectAt(Vector2d position) {
-            return null;
-        }
-
-        @Override
-        public List<WorldElement> getElements() {
-            return null;
-        }
-    }
-
-    class BoundedWorldMap implements WorldMap {
-        private final Vector2d lowerLeft;
-        private final Vector2d upperRight;
-
-        public BoundedWorldMap(Vector2d lowerLeft, Vector2d upperRight) {
-            this.lowerLeft = lowerLeft;
-            this.upperRight = upperRight;
-        }
-
-        @Override
-        public boolean canMoveTo(Vector2d position) {
-            return position.follows(lowerLeft) && position.precedes(upperRight);
-        }
-
-        @Override
-        public boolean place(Animal animal) {
-            return canMoveTo(animal.getPosition());
+        public void place(Animal animal) throws IncorrectPositionException {
         }
 
         @Override
@@ -73,6 +35,58 @@ public class AnimalTest {
 
         @Override
         public List<WorldElement> getElements() {
+            return null;
+        }
+
+        @Override
+        public Boundary getCurrentBounds() {
+            return null;
+        }
+    }
+
+    class BoundedWorldMap implements WorldMap {
+        private final Vector2d lowerLeft;
+        private final Vector2d upperRight;
+
+        public BoundedWorldMap(Vector2d lowerLeft, Vector2d upperRight) {
+            this.lowerLeft = lowerLeft;
+            this.upperRight = upperRight;
+        }
+
+        @Override
+        public boolean canMoveTo(Vector2d position) {
+            return position.follows(lowerLeft) && position.precedes(upperRight);
+        }
+
+        @Override
+        public void place(Animal animal) throws IncorrectPositionException {
+            if (!canMoveTo(animal.getPosition())) {
+                throw new IncorrectPositionException(animal.getPosition());
+            }
+        }
+
+        @Override
+        public void move(Animal animal, MoveDirection direction) {
+            // Do nothing
+        }
+
+        @Override
+        public boolean isOccupied(Vector2d position) {
+            return false;
+        }
+
+        @Override
+        public WorldElement objectAt(Vector2d position) {
+            return null;
+        }
+
+        @Override
+        public List<WorldElement> getElements() {
+            return null;
+        }
+
+        @Override
+        public Boundary getCurrentBounds() {
             return null;
         }
     }
@@ -120,7 +134,6 @@ public class AnimalTest {
         WorldMap map = new BoundedWorldMap(new Vector2d(0, 0), new Vector2d(4, 4));
 
         animal.move(MoveDirection.LEFT, map);
-
         animal.move(MoveDirection.FORWARD, map);
         assertEquals(new Vector2d(0, 0), animal.getPosition());
 
@@ -179,7 +192,7 @@ public class AnimalTest {
     }
 
     @Test
-    public void testAnimalMoveDenByValidator() {
+    public void testAnimalMoveDeniedByValidator() {
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(0, 0));
         WorldMap map = new BoundedWorldMap(new Vector2d(1, 1), new Vector2d(4, 4));
 
@@ -189,7 +202,7 @@ public class AnimalTest {
     }
 
     @Test
-    public void testAnimalRotationWithDenMove() {
+    public void testAnimalRotationWithDeniedMove() {
         Animal animal = new Animal(MapDirection.NORTH, new Vector2d(0, 0));
         WorldMap map = new BoundedWorldMap(new Vector2d(1, 1), new Vector2d(4, 4));
 
