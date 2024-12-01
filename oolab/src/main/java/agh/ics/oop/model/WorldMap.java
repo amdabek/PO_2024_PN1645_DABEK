@@ -53,4 +53,10 @@ public interface WorldMap extends MoveValidator {
 
     Boundary getCurrentBounds();
 
+    String getId();
+
+    void addObserver(MapChangeListener observer);
+
+    void removeObserver(MapChangeListener observer);
+
 }

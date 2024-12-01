@@ -1,6 +1,8 @@
 package agh.ics.oop;
 
 import agh.ics.oop.model.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class World {
@@ -8,22 +10,34 @@ public class World {
         System.out.println("start");
 
         try {
-            List<MoveDirection> directions = OptionsParser.parse(args);
-            List<Vector2d> positions = List.of(
-                    new Vector2d(0, 0),
-                    new Vector2d(4, 4),
-                    new Vector2d(4, 4)
-            );
-            AbstractWorldMap map = new GrassField(10);
-            map.addObserver(new ConsoleMapDisplay());
-            Simulation simulation = new Simulation(directions, positions, map);
-            simulation.run();
+            String[] argsDirections = {"f", "b", "r", "l", "f", "f", "r", "r", "f", "f"};
+            List<MoveDirection> directions = OptionsParser.parse(argsDirections);
+
+            List<Simulation> simulations = new ArrayList<>();
+            for (int i = 0; i < 3; i++) {
+                List<Vector2d> positions = List.of(
+                        new Vector2d(i % 10, i % 10)
+                );
+                WorldMap map = new GrassField("Map" + i, 10);
+                map.addObserver(new ConsoleMapDisplay());
+                Simulation simulation = new Simulation(directions, positions, map);
+                simulations.add(simulation);
+            }
+
+            SimulationEngine engine = new SimulationEngine(simulations);
+            engine.runAsyncInThreadPool();
+            engine.awaitSimulationsEnd();
+
+
+
         } catch (IllegalArgumentException e) {
             System.out.println("Error while parsing " + e.getMessage());
             return;
         }
 
-        System.out.println("koniec");
+        System.out.println("System zakończył działanie");
+
+
     }
 }
 

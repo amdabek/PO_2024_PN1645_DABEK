@@ -11,6 +11,11 @@ public abstract class AbstractWorldMap implements WorldMap {
     protected Vector2d lowerLeft = new Vector2d(Integer.MIN_VALUE, Integer.MIN_VALUE);
     protected Vector2d upperRight = new Vector2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
     private final List<MapChangeListener> observers = new ArrayList<>();
+    protected final String id;
+
+    public AbstractWorldMap(String id) {
+        this.id = id;
+    }
 
     public void addObserver(MapChangeListener observer) {
         observers.add(observer);
@@ -75,6 +80,11 @@ public abstract class AbstractWorldMap implements WorldMap {
     public String toString() {
         Boundary bounds = getCurrentBounds();
         return visualizer.draw(bounds.lowerLeft(), bounds.upperRight());
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
     }
 
 }

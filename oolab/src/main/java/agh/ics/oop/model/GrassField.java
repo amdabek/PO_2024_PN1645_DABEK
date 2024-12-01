@@ -7,7 +7,9 @@ import java.util.*;
 public class GrassField extends AbstractWorldMap {
     private final Map<Vector2d, Grass> grasses = new HashMap<>();
 
-    public GrassField(int grassNumber) {
+    public GrassField(String id, int grassNumber) {
+        super(id);
+
         int range = (int) Math.sqrt(grassNumber * 10);
         Random rand = new Random();
 
